@@ -563,24 +563,24 @@ async function exportJSON(){
 
 function buildHTML(email){
   const f=fn(email);
-  return `<div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;background:#263746;border-radius:16px;overflow:hidden;">
-<div style="background:#263746;border-bottom:4px solid #f3b921;padding:24px 32px;text-align:center;">
-  <div style="font-size:1.8rem;font-weight:900;color:#fff;letter-spacing:2px;">HUB<span style="color:#f3b921;">.</span></div>
-  <div style="font-size:.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#e3e3e3;margin-top:2px;">The HUB Social</div>
+  return `<div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e3e3e3;">
+<div style="background:#263746;border-bottom:4px solid #f3b921;padding:20px 32px;text-align:center;">
+  <div style="font-size:1.6rem;font-weight:900;color:#fff;letter-spacing:2px;">HUB<span style="color:#f3b921;">.</span></div>
+  <div style="font-size:.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#e3e3e3;margin-top:2px;">The HUB Social</div>
 </div>
-<div style="padding:32px;text-align:center;">
-  <div style="font-size:2.5rem;margin-bottom:8px;">🎰</div>
-  <h1 style="color:#f3b921;font-size:1.6rem;font-weight:900;letter-spacing:2px;margin-bottom:8px;">It's Bingo Time!</h1>
-  <p style="color:#e3e3e3;font-size:.95rem;margin-bottom:6px;">Hi <strong style="color:#fff;">${f}</strong>,</p>
-  <p style="color:#e3e3e3;font-size:.9rem;line-height:1.6;margin-bottom:24px;">Your personal bingo card is ready and waiting for you. Click the button below to open the live game - your card will load automatically when you enter your HUB email.</p>
-  <a href="${SITE_URL}" style="display:inline-block;background:#f3b921;color:#263746;padding:14px 36px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:1rem;letter-spacing:.5px;">🎰 Open My Bingo Card</a>
-  <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1);">
-    <p style="color:#757584;font-size:.8rem;margin-bottom:6px;">How to play:</p>
-    <p style="color:#e3e3e3;font-size:.8rem;line-height:1.6;">1. Click the button above and enter your HUB email<br>2. Your unique card loads automatically<br>3. Tap numbers as they're called<br>4. Get 5 in a row and claim BINGO! 🏆</p>
+<div style="padding:36px 32px;text-align:center;">
+  <div style="font-size:2.5rem;margin-bottom:12px;">🎰</div>
+  <h1 style="color:#263746;font-size:1.6rem;font-weight:900;letter-spacing:1px;margin-bottom:12px;">It's Bingo Time!</h1>
+  <p style="color:#263746;font-size:.95rem;margin-bottom:6px;">Hi <strong>${f}</strong>,</p>
+  <p style="color:#757584;font-size:.9rem;line-height:1.7;margin-bottom:28px;">Your personal bingo card is ready and waiting for you. Click the button below to open the live game - your card will load automatically when you enter your HUB email.</p>
+  <a href="${SITE_URL}" style="display:inline-block;background:#263746;color:#ffffff;padding:14px 36px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:1rem;letter-spacing:.5px;">🎰 Open My Bingo Card</a>
+  <div style="margin-top:32px;padding-top:24px;border-top:1px solid #e3e3e3;text-align:left;">
+    <p style="color:#263746;font-size:.85rem;font-weight:700;margin-bottom:10px;">How to play:</p>
+    <p style="color:#757584;font-size:.85rem;line-height:1.8;margin:0;">1. Click the button above and enter your HUB email<br>2. Your unique card loads automatically<br>3. Tap numbers as they are called<br>4. Get 5 in a row and claim BINGO! 🏆</p>
   </div>
 </div>
-<div style="background:#18252d;padding:16px;text-align:center;">
-  <p style="color:#757584;font-size:.75rem;margin:0;">Good luck! Made with ❤️ by <strong style="color:#f3b921;">The HUB Social</strong></p>
+<div style="background:#f9f9f9;border-top:1px solid #e3e3e3;padding:16px 32px;text-align:center;">
+  <p style="color:#757584;font-size:.75rem;margin:0;">Good luck! Made with ❤️ by <strong style="color:#263746;">The HUB Social</strong></p>
 </div>
 </div>`;
 }
