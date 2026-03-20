@@ -563,23 +563,22 @@ async function exportJSON(){
 
 function buildHTML(email){
   const f=fn(email);
-  return `<div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e3e3e3;">
-<div style="background:#ffffff;border-bottom:3px solid #f3b921;padding:16px 32px;text-align:center;">
+  return `<div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;background:#ffffff;border:1px solid #e3e3e3;">
+<div style="padding:16px 32px;text-align:center;border-bottom:1px solid #e3e3e3;">
   <div style="font-size:.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#263746;">The HUB Social</div>
 </div>
 <div style="padding:36px 32px;text-align:center;">
-  <div style="font-size:2.5rem;margin-bottom:12px;">🎰</div>
   <h1 style="color:#263746;font-size:1.6rem;font-weight:900;margin-bottom:12px;">It's Bingo Time!</h1>
   <p style="color:#263746;font-size:.95rem;margin-bottom:6px;">Hi <strong>${f}</strong>,</p>
-  <p style="color:#757584;font-size:.9rem;line-height:1.7;margin-bottom:28px;">Your personal bingo card is ready and waiting for you. Click the button below to open the live game - your card will load automatically when you enter your HUB email.</p>
-  <a href="${SITE_URL}" style="display:inline-block;background:#263746;color:#ffffff;padding:14px 36px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:1rem;">🎰 Open My Bingo Card</a>
+  <p style="color:#263746;font-size:.9rem;line-height:1.7;margin-bottom:28px;">Your personal bingo card is ready and waiting for you. Click the button below to open the live game - your card will load automatically when you enter your HUB email.</p>
+  <a href="${SITE_URL}" style="display:inline-block;background:#263746;color:#ffffff;padding:14px 36px;border:none;text-decoration:none;font-weight:bold;font-size:1rem;">Open My Bingo Card</a>
   <div style="margin-top:32px;padding-top:24px;border-top:1px solid #e3e3e3;text-align:left;">
     <p style="color:#263746;font-size:.85rem;font-weight:700;margin-bottom:10px;">How to play:</p>
-    <p style="color:#757584;font-size:.85rem;line-height:1.8;margin:0;">1. Click the button above and enter your HUB email<br>2. Your unique card loads automatically<br>3. Tap numbers as they are called<br>4. Get 5 in a row and claim BINGO! 🏆</p>
+    <p style="color:#263746;font-size:.85rem;line-height:1.8;margin:0;">1. Click the button above and enter your HUB email<br>2. Your unique card loads automatically<br>3. Tap numbers as they are called<br>4. Get 5 in a row and claim BINGO!</p>
   </div>
 </div>
-<div style="background:#f9f9f9;border-top:1px solid #e3e3e3;padding:16px 32px;text-align:center;">
-  <p style="color:#757584;font-size:.75rem;margin:0;">Good luck! Made with ❤️ by <strong style="color:#263746;">The HUB Social</strong></p>
+<div style="background:#ffffff;border-top:1px solid #e3e3e3;padding:16px 32px;text-align:center;">
+  <p style="color:#263746;font-size:.75rem;margin:0;">Good Luck, Have Fun! - Bragging rights are absolutely on the line.</p>
 </div>
 </div>`;
 }
