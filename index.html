@@ -284,7 +284,7 @@ const CC=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534'];
 const CONFETTI_COLORS=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534','#00aeef','#e3e3e3'];
 const PW='HUBbingo2026';
 const DOM='hubinternational.com';
-const SITE_URL='https://hub-bingo.netlify.app';
+const SITE_URL='https://samantharank.github.io/hub-bingo';
 
 let state=null,pEmail='',pCard=null,pCalled=[],pTimer=null,hostTimer=null;
 let isHost=false,lastStatus=null,lastCalledNum=null,activeTab='outlook';
@@ -500,6 +500,13 @@ function renderHost(){
 
 function startHostPoll(){
   if(hostTimer)clearInterval(hostTimer);
+  // realtime updates for host too
+  supabaseClient.channel('host-changes')
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'game'},async()=>{
+      const g=await loadState();if(!g)return;state=g;renderHost();applyStatus(g);
+    })
+    .subscribe();
+  // keep a 5s fallback just in case
   hostTimer=setInterval(async()=>{const g=await loadState();if(!g)return;state=g;renderHost();applyStatus(g);},5000);
 }
 
@@ -585,17 +592,21 @@ async function loadPlayerGame(){
   if(!player){document.getElementById('pErr').textContent=`No card found for ${pEmail}. Ask your host to add your email.`;return;}
   if(!pCard)pCard=player.card.map(c=>({...c}));
   pCalled=g.calledNums||[];
-  document.getElementById('pGreet').textContent=`👋 Hi ${fn(pEmail)}! Auto-refreshing every 5s`;
+  document.getElementById('pGreet').textContent=`👋 Hi ${fn(pEmail)}! Updates are live!`;
   const online=new Set(g.onlinePlayers||[]);online.add(pEmail);g.onlinePlayers=[...online];
   await saveState(g);
   renderPlayer();go('p2');applyStatus(g);
+  // cancel any old timer
   if(pTimer)clearInterval(pTimer);
-  pTimer=setInterval(async()=>{
-    const g2=await loadState();if(!g2)return;
-    const newLast=g2.calledNums?.length?g2.calledNums[g2.calledNums.length-1]:null;
-    if(newLast&&newLast!==lastCalledNum){playPop();lastCalledNum=newLast;}
-    pCalled=g2.calledNums||[];renderPlayer();applyStatus(g2);
-  },5000);
+  // use Supabase Realtime for instant updates
+  supabaseClient.channel('game-changes')
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'game'},async()=>{
+      const g2=await loadState();if(!g2)return;
+      const newLast=g2.calledNums?.length?g2.calledNums[g2.calledNums.length-1]:null;
+      if(newLast&&newLast!==lastCalledNum){playPop();lastCalledNum=newLast;}
+      pCalled=g2.calledNums||[];renderPlayer();applyStatus(g2);
+    })
+    .subscribe();
 }
 
 async function claimBingo(){
