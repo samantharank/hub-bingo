@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HUB Bingo</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#18252d;color:#fff;min-height:100vh;overflow-x:hidden;}
+
+/* ── HEADER (matches Recipe Swap) ── */
+header{background:#263746;border-bottom:4px solid #f3b921;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100;}
+.hub-logo{font-weight:900;font-size:26px;color:#fff;letter-spacing:-1px;}
+.hub-logo span{color:#f3b921;}
+.header-title{font-size:12px;font-weight:600;color:#e3e3e3;letter-spacing:2px;text-transform:uppercase;padding-left:14px;border-left:1px solid rgba(255,255,255,.2);}
+.logo-area{display:flex;align-items:center;gap:14px;}
+.header-right{display:flex;align-items:center;gap:10px;}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#263746 0%,#18252d 100%);padding:48px 24px 40px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08);}
+.hero h1{font-size:2.8rem;font-weight:900;color:#fff;letter-spacing:2px;margin-bottom:8px;line-height:1.1;}
+.hero h1 em{color:#f3b921;font-style:normal;}
+.hero p{color:#e3e3e3;font-size:1rem;max-width:480px;margin:0 auto 24px;}
+
+/* Floating balls background */
+.bg-balls{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bg-ball{position:absolute;border-radius:50%;opacity:0.05;animation:floatBall linear infinite;}
+@keyframes floatBall{0%{transform:translateY(110vh) rotate(0deg);}100%{transform:translateY(-20vh) rotate(360deg);}}
+
+/* Main content */
+.page{display:none;max-width:700px;margin:0 auto;padding:24px 16px;position:relative;z-index:1;}
+.page.on{display:block;}
+
+/* Cards/panels */
+.panel{background:#263746;border-radius:16px;padding:24px;margin-bottom:16px;border:1px solid rgba(255,255,255,.08);}
+.panel-title{font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#f3b921;margin-bottom:16px;}
+
+.btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:1rem;font-weight:bold;transition:all .2s;}
+.btn:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3);}
+.btn:active{transform:translateY(0);}
+.btn-primary{background:#f3b921;color:#263746;}
+.btn-electric{background:#0678d5;color:#fff;}
+.btn-green{background:#3ebd3e;color:#fff;}
+.btn-gold{background:#f3b921;color:#263746;}
+.btn-red{background:#ac1534;color:#fff;}
+.btn-gray{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15);}
+.sm{padding:6px 14px;font-size:.85rem;}
+
+input,input[type=password]{width:100%;padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:.95rem;margin-bottom:10px;transition:border-color .2s;}
+input:focus{outline:none;border-color:#f3b921;}
+input::placeholder{color:#757584;}
+.err{color:#f3b921;font-size:.85rem;margin-bottom:8px;}
+.badge{background:#f3b921;color:#263746;padding:4px 14px;border-radius:20px;display:inline-block;font-size:.75rem;margin-bottom:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px;}
+.row input{margin-bottom:0;}
+.xbtn{background:#ac1534;border:none;border-radius:8px;color:#fff;font-size:1.1rem;cursor:pointer;padding:0 12px;}
+.divider{border:none;border-top:1px solid rgba(255,255,255,.1);margin:16px 0;}
+
+/* Big flashy ball */
+.ball-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.ball{width:110px;height:110px;border-radius:50%;background:#385263;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;color:#fff;transition:all .3s;border:3px solid rgba(255,255,255,.1);}
+.ball.empty{background:#385263;color:#757584;font-size:.8rem;text-align:center;padding:8px;line-height:1.4;}
+.ball.pop{animation:ballPop .5s ease-out;}
+@keyframes ballPop{0%{transform:scale(0.5);opacity:0;}60%{transform:scale(1.2);}100%{transform:scale(1);opacity:1;}}
+.ball-letter{font-size:1rem;color:#f3b921;letter-spacing:1px;}
+.ball-number{font-size:2.8rem;line-height:1;font-weight:bold;}
+.ball-col-label{font-size:.7rem;color:#757584;margin-top:4px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+
+.chips{display:flex;flex-wrap:wrap;gap:5px;max-height:80px;overflow-y:auto;}
+.chip{background:rgba(255,255,255,.08);border-radius:20px;padding:3px 9px;font-size:.75rem;color:#fff;font-weight:bold;animation:chipIn .3s ease-out;}
+@keyframes chipIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+.chip.B{border-left:3px solid #263746;}.chip.I{border-left:3px solid #0678d5;}
+.chip.N{border-left:3px solid #f3b921;}.chip.G{border-left:3px solid #3ebd3e;}
+.chip.O{border-left:3px solid #ac1534;}
+
+.gtop{display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
+.ch{height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:bold;}
+.cgrid{display:grid;grid-template-columns:repeat(5,62px);gap:4px;}
+.cell{width:62px;height:62px;background:rgba(255,255,255,.06);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:bold;cursor:pointer;border:2px solid transparent;user-select:none;transition:all .2s;color:#e3e3e3;}
+.cell:hover:not(.free):not(.marked){border-color:#f3b921;transform:scale(1.05);}
+.cell.free{background:#f3b921;color:#263746;cursor:default;font-weight:900;}
+.cell.marked{background:#0678d5;color:#fff;animation:markIn .2s ease-out;}
+@keyframes markIn{from{transform:scale(1.2);}to{transform:scale(1);}}
+.cell.hot{border-color:#f3b921;color:#f3b921;background:rgba(243,185,33,.1);}
+.cell.win{background:#f3b921!important;color:#263746;border-color:#f3b921;animation:pu .5s infinite alternate;font-weight:900;}
+@keyframes pu{from{transform:scale(1)}to{transform:scale(1.1)}}
+.wm{font-size:1.6rem;color:#f3b921;font-weight:bold;text-align:center;margin:10px 0;display:none;animation:bounceIn .5s ease-out;}
+@keyframes bounceIn{0%{transform:scale(0);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
+
+.bar{display:flex;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.hplist{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0;}
+.hp{background:rgba(255,255,255,.06);border-radius:8px;padding:6px 14px;font-size:.85rem;border:1px solid rgba(255,255,255,.1);color:#e3e3e3;}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(24,37,45,.85);z-index:200;align-items:center;justify-content:center;}
+.modal.on{display:flex;}
+.mbox{background:#263746;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:24px;max-width:620px;width:95%;max-height:80vh;display:flex;flex-direction:column;}
+.mbox h2{color:#fff;margin-bottom:8px;}
+.mbox p{font-size:.85rem;color:#e3e3e3;margin-bottom:10px;}
+textarea{flex:1;background:rgba(255,255,255,.06);color:#e3e3e3;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:12px;font-family:monospace;font-size:.8rem;resize:none;min-height:220px;width:100%;}
+
+#countdownModal{background:rgba(24,37,45,.95);}
+.countdown-num{font-size:8rem;font-weight:bold;color:#f3b921;animation:countPop .8s ease-out;}
+@keyframes countPop{0%{transform:scale(2);opacity:0;}100%{transform:scale(1);opacity:1;}}
+
+.overlay{display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;flex-direction:column;}
+.overlay.on{display:flex;}
+#pauseOverlay{background:rgba(24,37,45,.96);}
+#winOverlay{background:rgba(24,37,45,.98);}
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:399;overflow:hidden;}
+.confetti-piece{position:absolute;top:-20px;animation:fall linear forwards;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);}}
+
+.card-container{background:#263746;border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,.08);display:inline-block;}
+
+/* Footer */
+footer{text-align:center;padding:24px;color:#757584;font-size:.8rem;border-top:1px solid rgba(255,255,255,.06);margin-top:40px;}
+footer strong{color:#f3b921;}
+</style>
+</head>
+<body>
+
+<!-- Floating background balls -->
+<div class="bg-balls" id="bgBalls"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-area">
+    <div class="hub-logo">HUB<span>.</span></div>
+    <div class="header-title">The HUB Social</div>
+  </div>
+  <div class="header-right">
+    <span style="color:#f3b921;font-size:.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;">🎰 Bingo</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <p style="font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#f3b921;margin-bottom:10px;">The HUB Social</p>
+  <h1>Let's Play<br><em>Bingo!</em></h1>
+  <p>Enter your HUB email to load your card and play along live with your team.</p>
+</div>
+
+<!-- PAUSE OVERLAY -->
+<div id="pauseOverlay" class="overlay">
+  <div style="text-align:center;padding:32px;">
+    <div style="font-size:4rem;margin-bottom:12px;animation:bounceIn .5s ease-out;">⏸</div>
+    <div style="font-size:1.8rem;font-weight:bold;color:#f3b921;margin-bottom:10px;">BINGO Called!</div>
+    <div style="color:#e3e3e3;font-size:1rem;" id="pauseMsg">Host is verifying... please wait.</div>
+  </div>
+</div>
+
+<!-- WIN OVERLAY -->
+<div id="winOverlay" class="overlay">
+  <div class="confetti-wrap" id="confettiWrap"></div>
+  <div style="text-align:center;padding:32px;position:relative;z-index:401;">
+    <div style="font-size:5rem;margin-bottom:8px;animation:bounceIn .6s ease-out;">🎉</div>
+    <div style="font-size:2.5rem;font-weight:bold;color:#f3b921;margin-bottom:10px;letter-spacing:2px;">BINGO!</div>
+    <div id="winMsg2" style="font-size:1.4rem;color:#fff;margin-bottom:20px;"></div>
+    <div id="hostDismissBtn" style="display:none;">      <button class="btn btn-gold" onclick="dismissWin()">🎰 Start New Game</button></div>
+    <div id="playerDismissBtn" style="display:none;"><button class="btn btn-gray" onclick="dismissWinPlayer()">Close</button></div>
+  </div>
+</div>
+
+<!-- HOST BINGO ALERT -->
+<div id="bingoAlert" class="modal">
+  <div class="mbox" style="text-align:center;max-width:400px;">
+    <div style="font-size:2.5rem;margin-bottom:8px;">🎉</div>
+    <h2 style="text-align:center;margin-bottom:8px;">BINGO Claimed!</h2>
+    <div id="bingoWinner" style="font-size:1.2rem;color:#263746;margin-bottom:6px;"></div>
+    <div style="color:#757584;font-size:.85rem;margin-bottom:20px;">Verify their card before confirming.</div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-green" onclick="confirmBingo()">✅ Confirm BINGO</button>
+      <button class="btn btn-red" onclick="rejectBingo()">❌ False Alarm</button>
+    </div>
+  </div>
+</div>
+
+<!-- COUNTDOWN MODAL -->
+<div id="countdownModal" class="modal">
+  <div style="text-align:center;">
+    <div style="color:#fff;font-size:1.5rem;margin-bottom:8px;font-weight:bold;">Game starting in...</div>
+    <div class="countdown-num" id="countdownNum">3</div>
+  </div>
+</div>
+
+<!-- JSON MODAL -->
+<div id="jModal" class="modal">
+  <div class="mbox">
+    <h2>📋 Power Automate JSON</h2>
+    <p>Copy and paste into your Power Automate flow.</p>
+    <textarea id="jBox" readonly></textarea>
+    <div class="bar" style="margin-top:10px;">
+      <button class="btn btn-green" onclick="copyJSON(this)">Copy JSON</button>
+      <button class="btn btn-gray" onclick="document.getElementById('jModal').classList.remove('on')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- P1: player login -->
+<div id="p1" class="page on" style="max-width:420px;text-align:center;">
+  <div class="panel">
+    <div class="panel-title">Player Login</div>
+    <p style="color:#e3e3e3;margin-bottom:16px;font-size:.95rem;">Enter your HUB email to load your bingo card</p>
+    <input type="email" id="pEmail" placeholder="firstname.lastname@hubinternational.com" onkeydown="if(event.key==='Enter')joinGame()"/>
+    <div id="pErr" class="err"></div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:10px;" onclick="joinGame()">Load My Card</button>
+    <hr class="divider">
+    <button class="btn btn-gray sm" onclick="go('hLogin')">Host Login</button>
+  </div>
+</div>
+
+<!-- P2: player card -->
+<div id="p2" class="page" style="text-align:center;">
+  <p id="pGreet" style="color:#757584;font-size:.85rem;margin-bottom:10px;"></p>
+  <div class="gtop" style="justify-content:center;">
+    <div class="ball-wrap">
+      <div id="pBall" class="ball empty">Waiting...</div>
+      <div id="pBallLabel" class="ball-col-label"></div>
+    </div>
+    <div style="flex:1;min-width:160px;text-align:left;">
+      <div style="color:#757584;font-size:.8rem;margin-bottom:5px;">Called: <span id="pCount" style="color:#263746;font-weight:bold;">0</span>/75</div>
+      <div class="chips" id="pChips"></div>
+    </div>
+  </div>
+  <div style="text-align:center;">
+    <div class="card-container">
+      <div class="cgrid" style="display:inline-grid;margin-bottom:4px;" id="pHdr"></div>
+      <div class="cgrid" style="display:inline-grid;" id="pGrid"></div>
+    </div>
+  </div>
+  <div id="pWinMsg" class="wm">🎉 BINGO! You win!</div>
+  <div id="claimWrap" style="margin-top:12px;display:none;">
+    <button class="btn btn-gold" id="claimBtn" onclick="claimBingo()">🎉 Claim BINGO!</button>
+  </div>
+  <div style="color:#757584;font-size:.75rem;margin-top:10px;">Tap a <span style="color:#f3b921;font-weight:bold;">highlighted</span> number to mark it off</div>
+  <div class="bar"><button class="btn btn-gray sm" onclick="switchPlayer()">← Switch Player</button></div>
+</div>
+
+<!-- H1: host login -->
+<div id="hLogin" class="page" style="max-width:340px;text-align:center;">
+  <div class="badge">🎙 Host Login</div><br>
+  <input type="password" id="hPw" placeholder="Enter host password" onkeydown="if(event.key==='Enter')tryLogin()"/>
+  <div id="hPwErr" class="err"></div>
+  <button class="btn btn-primary" style="width:100%;margin-bottom:10px;" onclick="tryLogin()">Login</button>
+  <button class="btn btn-gray sm" onclick="go('p1')">← Back</button>
+</div>
+
+<!-- H2: host setup -->
+<div id="hSetup" class="page" style="text-align:center;">
+  <div class="badge">🎙 HOST MODE</div>
+  <p style="color:#e3e3e3;margin-bottom:14px;">Choose how you want to add players</p>
+
+  <!-- Tabs -->
+  <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;">
+    <button id="tabOutlook" onclick="switchTab('outlook')" style="background:#f3b921;color:#263746;padding:8px 16px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">📧 Outlook Paste</button>
+    <button id="tabManual" onclick="switchTab('manual')" style="background:rgba(255,255,255,.15);color:#fff;padding:8px 16px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">✏️ One by One</button>
+    <button id="tabExcel" onclick="switchTab('excel')" style="background:rgba(255,255,255,.15);color:#fff;padding:8px 16px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">📊 Excel / Forms</button>
+  </div>
+
+  <!-- Outlook -->
+  <div id="inputOutlook" style="display:block;">
+    <p style="color:#757584;font-size:.85rem;margin-bottom:8px;">Paste your Outlook recipient list - emails extracted automatically</p>
+    <textarea id="emailPaste" oninput="updateCount()" placeholder="e.g. Smith, John <john.smith@hubinternational.com>; Jones, Mary <mary.jones@hubinternational.com>" style="width:100%;min-height:120px;margin-bottom:8px;font-family:Arial,sans-serif;font-size:.85rem;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:10px;resize:vertical;"></textarea>
+  </div>
+
+  <!-- Manual -->
+  <div id="inputManual" style="display:none;">
+    <p style="color:#757584;font-size:.85rem;margin-bottom:8px;">Enter player emails one at a time</p>
+    <div id="hList">
+      <div class="row"><input type="email" oninput="updateCount()" placeholder="firstname.lastname@hubinternational.com"/><button class="xbtn" onclick="removeRow(this)">×</button></div>
+      <div class="row"><input type="email" oninput="updateCount()" placeholder="firstname.lastname@hubinternational.com"/><button class="xbtn" onclick="removeRow(this)">×</button></div>
+    </div>
+    <button onclick="addRow()" style="background:rgba(255,255,255,.15);color:#fff;padding:6px 14px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;margin:8px 0 12px;">+ Add Player</button>
+  </div>
+
+  <!-- Excel -->
+  <div id="inputExcel" style="display:none;">
+    <p style="color:#757584;font-size:.85rem;margin-bottom:8px;">Paste the email column from your Excel or Microsoft Forms export</p>
+    <textarea id="emailExcel" oninput="updateCount()" placeholder="Paste emails from Excel here - one per line or comma/semicolon separated" style="width:100%;min-height:120px;margin-bottom:8px;font-family:Arial,sans-serif;font-size:.85rem;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:10px;resize:vertical;"></textarea>
+  </div>
+
+  <div id="parsedCount" style="color:#f3b921;font-size:.85rem;margin-bottom:12px;min-height:20px;"></div>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    <button onclick="exportJSON()" style="background:#0678d5;color:#fff;padding:10px 20px;font-size:1rem;font-weight:bold;border:none;border-radius:8px;cursor:pointer;">📋 Export JSON</button>
+    <button onclick="startGame()" style="background:#f3b921;color:#263746;padding:10px 20px;font-size:1rem;font-weight:bold;border:none;border-radius:8px;cursor:pointer;">▶ Start Game</button>
+  </div>
+  <div style="display:flex;justify-content:center;margin-top:16px;">
+    <button onclick="go('p1')" style="background:rgba(255,255,255,.1);color:#fff;padding:6px 14px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">Log out</button>
+  </div>
+</div>
+
+  <div id="parsedCount" style="color:#f3b921;font-size:.85rem;margin-bottom:12px;"></div>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    <button class="btn btn-electric" onclick="exportJSON()">📋 Export JSON</button>
+    <button class="btn btn-primary" onclick="startGame()">▶ Start Game</button>
+  </div>
+  <div class="bar"><button class="btn btn-gray sm" onclick="go('p1')">Log out</button></div>
+</div>
+
+<!-- H3: host game -->
+<div id="hGame" class="page">
+  <div style="text-align:center;margin-bottom:10px;"><div class="badge">🎙 HOST MODE</div></div>
+  <div class="gtop">
+    <div class="ball-wrap">
+      <div id="hBall" class="ball empty">Draw!</div>
+      <div id="hBallLabel" class="ball-col-label"></div>
+    </div>
+    <button class="btn btn-primary" id="drawBtn" onclick="drawNumber()" style="font-size:1.1rem;padding:14px 28px;">🎲 Draw Number</button>
+    <div style="flex:1;min-width:160px;">
+      <div style="color:#757584;font-size:.8rem;margin-bottom:5px;">Called: <span id="hCount" style="color:#263746;font-weight:bold;">0</span>/75</div>
+      <div class="chips" id="hChips"></div>
+    </div>
+  </div>
+  <hr class="divider">
+  <div style="color:#757584;font-size:.75rem;text-align:center;margin-bottom:6px;">🟢 Online &nbsp;⚫ Not yet joined</div>
+  <div id="hPlayers" class="hplist"></div>
+  <div class="bar">
+    <button class="btn btn-red sm" onclick="newGame()">🔄 New Game</button>
+    <button class="btn btn-gray sm" onclick="go('p1')">Log out</button>
+  </div>
+</div>
+
+<footer>Made with ❤️ by <strong>The HUB Social</strong></footer>
+
+<script>
+
+const SB_URL='https://zzpayiejynppqhtynlnk.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6cGF5aWVqeW5wcHFodHlubG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MTQwNzEsImV4cCI6MjA4NzQ5MDA3MX0.zV0eYc6raOOWP2ebuX0JJep-mzqWCn74rj0JWcjEaAI';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+const COLS=['B','I','N','G','O'];
+const RANGES={B:[1,15],I:[16,30],N:[31,45],G:[46,60],O:[61,75]};
+const CC=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534'];
+const BALL_COLORS=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534','#00aeef'];
+const CONFETTI_COLORS=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534','#00aeef','#e3e3e3'];
+const PW='HUBbingo2026';
+const DOM='hubinternational.com';
+const SITE_URL='https://hub-bingo.netlify.app';
+
+let state=null,pEmail='',pCard=null,pCalled=[],pTimer=null,hostTimer=null;
+let isHost=false,lastStatus=null,lastCalledNum=null;
+
+const rr=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const fn=e=>{const p=e.split('@')[0].split('.')[0];return p[0].toUpperCase()+p.slice(1).toLowerCase();};
+const full=e=>e.split('@')[0].split('.').map(p=>p[0].toUpperCase()+p.slice(1).toLowerCase()).join(' ');
+const col=n=>COLS[Math.floor((n-1)/15)];
+
+// ── FLOATING BACKGROUND BALLS ──
+function initBgBalls(){
+  const wrap=document.getElementById('bgBalls');
+  const sizes=[40,60,80,50,70,90,45,65];
+  for(let i=0;i<18;i++){
+    const el=document.createElement('div');
+    el.className='bg-ball';
+    const sz=sizes[i%sizes.length];
+    el.style.cssText=`width:${sz}px;height:${sz}px;background:${BALL_COLORS[i%BALL_COLORS.length]};left:${Math.random()*100}%;animation-duration:${8+Math.random()*12}s;animation-delay:${-Math.random()*12}s;`;
+    wrap.appendChild(el);
+  }
+}
+initBgBalls();
+
+// ── SOUND ──
+const AudioCtx=window.AudioContext||window.webkitAudioContext;
+let actx=null;
+function getACtx(){if(!actx)actx=new AudioCtx();return actx;}
+
+function playPop(){
+  try{
+    const a=getACtx(),o=a.createOscillator(),g=a.createGain();
+    o.connect(g);g.connect(a.destination);
+    o.frequency.setValueAtTime(600,a.currentTime);
+    o.frequency.exponentialRampToValueAtTime(300,a.currentTime+0.15);
+    g.gain.setValueAtTime(0.3,a.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.2);
+    o.start();o.stop(a.currentTime+0.2);
+  }catch(e){}
+}
+
+function playMark(){
+  try{
+    const a=getACtx(),o=a.createOscillator(),g=a.createGain();
+    o.connect(g);g.connect(a.destination);
+    o.type='sine';
+    o.frequency.setValueAtTime(880,a.currentTime);
+    g.gain.setValueAtTime(0.2,a.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.15);
+    o.start();o.stop(a.currentTime+0.15);
+  }catch(e){}
+}
+
+function playFanfare(){
+  try{
+    const a=getACtx();
+    const notes=[523,659,784,1047];
+    notes.forEach((freq,i)=>{
+      const o=a.createOscillator(),g=a.createGain();
+      o.connect(g);g.connect(a.destination);
+      o.frequency.value=freq;
+      g.gain.setValueAtTime(0,a.currentTime+i*0.15);
+      g.gain.linearRampToValueAtTime(0.3,a.currentTime+i*0.15+0.05);
+      g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+i*0.15+0.3);
+      o.start(a.currentTime+i*0.15);
+      o.stop(a.currentTime+i*0.15+0.3);
+    });
+  }catch(e){}
+}
+
+// ── COUNTDOWN ──
+function showCountdown(cb){
+  const modal=document.getElementById('countdownModal');
+  const num=document.getElementById('countdownNum');
+  modal.classList.add('on');
+  let count=3;
+  num.textContent=count;
+  const interval=setInterval(()=>{
+    count--;
+    if(count<=0){
+      clearInterval(interval);
+      num.textContent='GO! 🎱';
+      setTimeout(()=>{modal.classList.remove('on');cb();},700);
+    }else{
+      num.textContent=count;
+      num.style.animation='none';
+      num.offsetHeight; // reflow
+      num.style.animation='countPop .8s ease-out';
+    }
+  },900);
+}
+
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+
+function genCard(){
+  let c=[];
+  COLS.forEach(k=>{const[a,b]=RANGES[k],ns=[];while(ns.length<5){const n=rr(a,b);if(!ns.includes(n))ns.push(n);}for(let r=0;r<5;r++)c.push({num:ns[r],marked:false,free:false});});
+  c[12].free=true;c[12].marked=true;
+  return c;
+}
+
+function win(card){
+  for(let r=0;r<5;r++)if([0,1,2,3,4].every(c=>card[c*5+r].marked))return true;
+  for(let c=0;c<5;c++)if([0,1,2,3,4].every(r=>card[c*5+r].marked))return true;
+  if([0,1,2,3,4].every(i=>card[i*5+i].marked))return true;
+  if([0,1,2,3,4].every(i=>card[i*5+(4-i)].marked))return true;
+  return false;
+}
+
+function winCells(card){
+  const w=new Set();
+  for(let r=0;r<5;r++)if([0,1,2,3,4].every(c=>card[c*5+r].marked))[0,1,2,3,4].forEach(c=>w.add(r*5+c));
+  for(let c=0;c<5;c++)if([0,1,2,3,4].every(r=>card[c*5+r].marked))[0,1,2,3,4].forEach(r=>w.add(r*5+c));
+  if([0,1,2,3,4].every(i=>card[i*5+i].marked))[0,1,2,3,4].forEach(i=>w.add(i*5+i));
+  if([0,1,2,3,4].every(i=>card[i*5+(4-i)].marked))[0,1,2,3,4].forEach(i=>w.add(i*5+(4-i)));
+  return w;
+}
+
+async function saveState(g){
+  try{const{error}=await sb.from('game').upsert({id:1,data:JSON.stringify(g)},{onConflict:'id'});if(error)console.error('Save error',error);}
+  catch(e){console.error('Save error',e);}
+}
+
+async function loadState(){
+  try{const{data,error}=await sb.from('game').select('data').eq('id',1).single();if(error||!data)return null;return JSON.parse(data.data);}
+  catch(e){return null;}
+}
+
+function applyStatus(g){
+  if(!g)return;
+  const status=g.status||'playing';
+  if(status===lastStatus)return;
+  lastStatus=status;
+  if(status==='paused'){
+    if(!isHost){document.getElementById('pauseMsg').textContent=`${g.bingoClaimant} called BINGO! Host is verifying...`;document.getElementById('pauseOverlay').classList.add('on');}
+    else{document.getElementById('bingoWinner').textContent=`${g.bingoClaimant} has called BINGO!`;document.getElementById('bingoAlert').classList.add('on');}
+  }
+  if(status==='confirmed'){
+    document.getElementById('pauseOverlay').classList.remove('on');
+    document.getElementById('bingoAlert').classList.remove('on');
+    document.getElementById('winMsg2').textContent=`🎊 Congratulations ${g.bingoClaimant}! 🎊`;
+    document.getElementById('hostDismissBtn').style.display=isHost?'block':'none';
+    document.getElementById('playerDismissBtn').style.display=isHost?'none':'block';
+    document.getElementById('winOverlay').classList.add('on');
+    playFanfare();launchConfetti();
+  }
+  if(status==='playing'){
+    document.getElementById('pauseOverlay').classList.remove('on');
+    document.getElementById('bingoAlert').classList.remove('on');
+    document.getElementById('winOverlay').classList.remove('on');
+  }
+}
+
+function launchConfetti(){
+  const wrap=document.getElementById('confettiWrap');wrap.innerHTML='';
+  for(let i=0;i<100;i++){
+    const el=document.createElement('div');el.className='confetti-piece';
+    el.style.cssText=`left:${Math.random()*100}%;background:${CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)]};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*1.5}s;border-radius:${Math.random()>.5?'50%':'2px'};width:${6+Math.random()*10}px;height:${8+Math.random()*14}px;`;
+    wrap.appendChild(el);
+  }
+}
+
+function updateBall(ballId, labelId, n){
+  const ball=document.getElementById(ballId);
+  const label=document.getElementById(labelId);
+  const c=col(n);
+  const colIdx=COLS.indexOf(c);
+  ball.className='ball pop';
+  ball.style.background=CC[colIdx];
+  ball.innerHTML=`<span class="ball-letter">${c}</span><span class="ball-number">${n}</span>`;
+  if(label) label.textContent=`Column ${c}`;
+}
+
+// HOST
+async function tryLogin(){
+  if(document.getElementById('hPw').value===PW){
+    document.getElementById('hPw').value='';document.getElementById('hPwErr').textContent='';
+    isHost=true;
+    const g=await loadState();
+    if(g&&g.active){state=g;renderHost();go('hGame');startHostPoll();}
+    else go('hSetup');
+  }else{document.getElementById('hPwErr').textContent='Incorrect password.';}
+}
+
+function addRow(){
+  const d=document.createElement('div');d.className='row';
+  d.innerHTML=`<input type="email" placeholder="firstname.lastname@hubinternational.com"/><button class="xbtn" onclick="removeRow(this)">×</button>`;
+  document.getElementById('hList').appendChild(d);
+}
+function removeRow(b){b.parentElement.remove();}
+
+async function startGame(){
+  const emails=[...document.querySelectorAll('#hList input')].map(i=>i.value.trim().toLowerCase()).filter(e=>e);
+  if(!emails.length){alert('Add at least one email.');return;}
+  showCountdown(async()=>{
+    state={players:emails.map(e=>({email:e,name:full(e),card:genCard()})),calledNums:[],active:true,status:'playing',onlinePlayers:[]};
+    await saveState(state);renderHost();go('hGame');startHostPoll();
+  });
+}
+
+async function drawNumber(){
+  if(!state||state.status==='paused')return;
+  if(state.calledNums.length>=75){alert('All 75 numbers called!');return;}
+  let n;do{n=rr(1,75);}while(state.calledNums.includes(n));
+  state.calledNums.push(n);
+  playPop();
+  await saveState(state);renderHost();
+}
+
+function renderHost(){
+  const called=state.calledNums,last=called.length?called[called.length-1]:null;
+  const ball=document.getElementById('hBall');
+  const label=document.getElementById('hBallLabel');
+  if(last){
+    updateBall('hBall','hBallLabel',last);
+  }else{
+    ball.className='ball empty';ball.innerHTML='Draw!';
+    if(label)label.textContent='';
+  }
+  document.getElementById('hCount').textContent=called.length;
+  const chips=document.getElementById('hChips');chips.innerHTML='';
+  [...called].reverse().forEach(n=>{const c=col(n);const s=document.createElement('span');s.className=`chip ${c}`;s.textContent=`${c}${n}`;chips.appendChild(s);});
+  const hp=document.getElementById('hPlayers');hp.innerHTML='';
+  const online=state.onlinePlayers||[];
+  state.players.forEach(p=>{
+    const isOnline=online.includes(p.email);
+    const d=document.createElement('div');d.className='hp';
+    d.innerHTML=`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${isOnline?'#3ebd3e':'#757584'};margin-right:6px;"></span>${fn(p.email)}`;
+    hp.appendChild(d);
+  });
+  document.getElementById('drawBtn').disabled=state.status==='paused';
+  document.getElementById('drawBtn').style.opacity=state.status==='paused'?'.4':'1';
+}
+
+function startHostPoll(){
+  if(hostTimer)clearInterval(hostTimer);
+  hostTimer=setInterval(async()=>{const g=await loadState();if(!g)return;state=g;renderHost();applyStatus(g);},5000);
+}
+
+async function confirmBingo(){
+  state.status='confirmed';await saveState(state);
+  document.getElementById('bingoAlert').classList.remove('on');applyStatus(state);
+}
+
+async function rejectBingo(){
+  state.status='playing';state.bingoClaimant=null;lastStatus=null;
+  await saveState(state);document.getElementById('bingoAlert').classList.remove('on');
+}
+
+async function dismissWin(){
+  state=null;lastStatus=null;
+  if(hostTimer)clearInterval(hostTimer);
+  await saveState({active:false,status:'playing',calledNums:[],players:[],onlinePlayers:[]});
+  document.getElementById('winOverlay').classList.remove('on');
+  document.getElementById('pauseOverlay').classList.remove('on');
+  document.getElementById('bingoAlert').classList.remove('on');
+  document.getElementById('emailPaste').value='';
+  document.getElementById('emailExcel').value='';
+  document.getElementById('hList').innerHTML=`<div class="row"><input type="email" placeholder="firstname.lastname@hubinternational.com"/><button class="xbtn" onclick="removeRow(this)">×</button></div><div class="row"><input type="email" placeholder="firstname.lastname@hubinternational.com"/><button class="xbtn" onclick="removeRow(this)">×</button></div>`;
+  document.getElementById('parsedCount').textContent='';
+  switchTab('outlook');
+  go('hSetup');
+}
+
+async function newGame(){
+  if(!confirm('Start a new game? This will clear the current game.'))return;
+  state=null;lastStatus=null;
+  if(hostTimer)clearInterval(hostTimer);
+  await saveState({active:false,status:'playing',calledNums:[],players:[],onlinePlayers:[]});
+  document.getElementById('winOverlay').classList.remove('on');
+  document.getElementById('pauseOverlay').classList.remove('on');
+  document.getElementById('bingoAlert').classList.remove('on');
+  document.getElementById('emailPaste').value='';
+  document.getElementById('emailExcel').value='';
+  document.getElementById('hList').innerHTML=`<div class="row"><input type="email" placeholder="firstname.lastname@hubinternational.com"/><button class="xbtn" onclick="removeRow(this)">×</button></div><div class="row"><input type="email" placeholder="firstname.lastname@hubinternational.com"/><button class="xbtn" onclick="removeRow(this)">×</button></div>`;
+  document.getElementById('parsedCount').textContent='';
+  switchTab('outlook');
+  go('hSetup');
+}
+
+async function exportJSON(){
+  const emails=[...document.querySelectorAll('#hList input')].map(i=>i.value.trim().toLowerCase()).filter(e=>e);
+  if(!emails.length){alert('Add at least one email first.');return;}
+  const players=emails.map(e=>({email:e,name:full(e),card:genCard()}));
+  state={players,calledNums:[],active:true,status:'playing',onlinePlayers:[]};
+  await saveState(state);
+  const data=players.map(p=>({name:p.name,email:p.email,cardHTML:buildHTML(p.email,p.card)}));
+  document.getElementById('jBox').value=JSON.stringify(data,null,2);
+  document.getElementById('jModal').classList.add('on');
+}
+
+function buildHTML(email,card){
+  const f=fn(email);
+  let hdr=COLS.map((l,i)=>`<th style="width:60px;height:36px;background:${CC[i]};color:#fff;border-radius:6px;text-align:center;font-size:1.2rem;font-weight:bold;">${l}</th>`).join('');
+  let rows='';
+  for(let r=0;r<5;r++){
+    let cells='';
+    for(let c=0;c<5;c++){const cell=card[c*5+r];cells+=`<td style="width:60px;height:60px;background:${cell.free?'#263746':'#eef0e2'};border-radius:6px;text-align:center;vertical-align:middle;color:${cell.free?'#fff':'#263746'};font-size:1.1rem;font-weight:bold;">${cell.free?'FREE':cell.num}</td>`;}
+    rows+=`<tr>${cells}</tr>`;
+  }
+  return `<div style="font-family:Arial,sans-serif;max-width:400px;margin:0 auto;background:#ffffff;padding:24px;border-radius:12px;border:2px solid #e3e3e3;"><h1 style="text-align:center;color:#263746;letter-spacing:2px;margin-bottom:4px;font-size:1.5rem;">🎰 HUB BINGO</h1><p style="text-align:center;color:#757584;margin-bottom:16px;font-size:.85rem;">Good luck today!</p><p style="text-align:center;color:#263746;margin-bottom:16px;">Hi <strong>${f}</strong>, here is your card for today's game!</p><table style="border-collapse:separate;border-spacing:4px;margin:0 auto;"><tr>${hdr}</tr>${rows}</table><p style="text-align:center;color:#757584;font-size:.8rem;margin-top:16px;">Mark off numbers as they're called. First to get 5 in a row wins! 🍀</p><div style="text-align:center;margin-top:20px;"><a href="${SITE_URL}" style="background:#263746;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:1rem;">🎰 Play Bingo Online</a></div></div>`;
+}
+
+function copyJSON(btn){
+  document.getElementById('jBox').select();document.execCommand('copy');
+  btn.textContent='✅ Copied!';setTimeout(()=>btn.textContent='Copy JSON',2000);
+}
+
+// PLAYER
+function joinGame(){
+  const e=document.getElementById('pEmail').value.trim().toLowerCase();
+  if(!e){document.getElementById('pErr').textContent='Please enter your email.';return;}
+  if(!e.endsWith('@'+DOM)){document.getElementById('pErr').textContent=`Please use your @${DOM} email.`;return;}
+  pEmail=e;pCard=null;lastStatus=null;document.getElementById('pErr').textContent='';
+  loadPlayerGame();
+}
+
+async function loadPlayerGame(){
+  const g=await loadState();
+  if(!g||!g.active){document.getElementById('pErr').textContent='No active game yet. Ask your host to start the game first.';return;}
+  const player=g.players.find(p=>p.email===pEmail);
+  if(!player){document.getElementById('pErr').textContent=`No card found for ${pEmail}. Ask your host to add your email.`;return;}
+  if(!pCard)pCard=player.card.map(c=>({...c}));
+  pCalled=g.calledNums||[];
+  document.getElementById('pGreet').textContent=`👋 Hi ${fn(pEmail)}! Auto-refreshing every 5s`;
+  const online=new Set(g.onlinePlayers||[]);
+  online.add(pEmail);g.onlinePlayers=[...online];
+  await saveState(g);
+  renderPlayer();go('p2');applyStatus(g);
+  if(pTimer)clearInterval(pTimer);
+  pTimer=setInterval(async()=>{
+    const g2=await loadState();if(!g2)return;
+    const newLast=g2.calledNums?.length?g2.calledNums[g2.calledNums.length-1]:null;
+    if(newLast&&newLast!==lastCalledNum){playPop();lastCalledNum=newLast;}
+    pCalled=g2.calledNums||[];renderPlayer();applyStatus(g2);
+  },5000);
+}
+
+async function claimBingo(){
+  const btn=document.getElementById('claimBtn');
+  btn.disabled=true;btn.textContent='⏳ Waiting for host...';
+  const g=await loadState();
+  if(g&&!g.bingoClaimant){
+    g.status='paused';g.bingoClaimant=fn(pEmail);
+    await saveState(g);
+    document.getElementById('pauseMsg').textContent='You called BINGO! Host is verifying...';
+    document.getElementById('pauseOverlay').classList.add('on');
+  }else{btn.textContent='⚠️ Already claimed!';btn.disabled=true;}
+}
+
+function dismissWinPlayer(){document.getElementById('winOverlay').classList.remove('on');}
+
+function renderPlayer(){
+  const called=pCalled,last=called.length?called[called.length-1]:null;
+  const ball=document.getElementById('pBall');
+  const label=document.getElementById('pBallLabel');
+  if(last){
+    if(last!==lastCalledNum){updateBall('pBall','pBallLabel',last);}
+  }else{
+    ball.className='ball empty';ball.innerHTML='Waiting...';
+    if(label)label.textContent='';
+  }
+  document.getElementById('pCount').textContent=called.length;
+  const chips=document.getElementById('pChips');chips.innerHTML='';
+  [...called].reverse().forEach(n=>{const c=col(n);const s=document.createElement('span');s.className=`chip ${c}`;s.textContent=`${c}${n}`;chips.appendChild(s);});
+  const hdr=document.getElementById('pHdr');hdr.innerHTML='';
+  COLS.forEach((l,i)=>{const d=document.createElement('div');d.className='ch';d.style.cssText=`width:62px;background:${CC[i]};color:#fff;`;d.textContent=l;hdr.appendChild(d);});
+  const won=win(pCard),wc=won?winCells(pCard):new Set();
+  const grid=document.getElementById('pGrid');grid.innerHTML='';
+  for(let r=0;r<5;r++){
+    for(let c=0;c<5;c++){
+      const idx=c*5+r,cell=pCard[idx],di=r*5+c;
+      const div=document.createElement('div');
+      let cls='cell';
+      if(cell.free)cls+=' free';
+      else if(wc.has(di))cls+=' win';
+      else if(cell.marked)cls+=' marked';
+      else if(called.includes(cell.num))cls+=' hot';
+      div.className=cls;div.textContent=cell.free?'FREE':cell.num;
+      if(!cell.free){const i=idx;div.onclick=()=>{if(pCalled.includes(pCard[i].num)){pCard[i].marked=!pCard[i].marked;playMark();renderPlayer();}};}
+      grid.appendChild(div);
+    }
+  }
+  document.getElementById('pWinMsg').style.display=won?'block':'none';
+  document.getElementById('claimWrap').style.display=won?'block':'none';
+}
+
+async function switchPlayer(){
+  if(pTimer)clearInterval(pTimer);
+  const g=await loadState();
+  if(g){g.onlinePlayers=(g.onlinePlayers||[]).filter(e=>e!==pEmail);await saveState(g);}
+  pEmail='';pCard=null;pCalled=[];lastStatus=null;lastCalledNum=null;
+  document.getElementById('pEmail').value='';document.getElementById('pErr').textContent='';
+  document.getElementById('pauseOverlay').classList.remove('on');
+  document.getElementById('winOverlay').classList.remove('on');
+  go('p1');
+}
+</script>
+</body>
+</html>
