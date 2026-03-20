@@ -500,13 +500,14 @@ function renderHost(){
 
 function startHostPoll(){
   if(hostTimer)clearInterval(hostTimer);
-  // realtime updates for host too
-  supabaseClient.channel('host-changes')
-    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'game'},async()=>{
-      const g=await loadState();if(!g)return;state=g;renderHost();applyStatus(g);
+  // Realtime for instant host updates
+  supabaseClient.channel('host-game')
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'game',filter:'id=eq.1'},async(payload)=>{
+      const g=JSON.parse(payload.new.data);
+      if(!g)return;state=g;renderHost();applyStatus(g);
     })
     .subscribe();
-  // keep a 5s fallback just in case
+  // 5s fallback
   hostTimer=setInterval(async()=>{const g=await loadState();if(!g)return;state=g;renderHost();applyStatus(g);},5000);
 }
 
@@ -592,21 +593,28 @@ async function loadPlayerGame(){
   if(!player){document.getElementById('pErr').textContent=`No card found for ${pEmail}. Ask your host to add your email.`;return;}
   if(!pCard)pCard=player.card.map(c=>({...c}));
   pCalled=g.calledNums||[];
-  document.getElementById('pGreet').textContent=`👋 Hi ${fn(pEmail)}! Updates are live!`;
+  document.getElementById('pGreet').textContent=`👋 Hi ${fn(pEmail)}! Updates are instant!`;
   const online=new Set(g.onlinePlayers||[]);online.add(pEmail);g.onlinePlayers=[...online];
   await saveState(g);
   renderPlayer();go('p2');applyStatus(g);
-  // cancel any old timer
   if(pTimer)clearInterval(pTimer);
-  // use Supabase Realtime for instant updates
-  supabaseClient.channel('game-changes')
-    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'game'},async()=>{
-      const g2=await loadState();if(!g2)return;
+  // Realtime subscription for instant updates
+  supabaseClient.channel('player-game-'+pEmail)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'game',filter:'id=eq.1'},async(payload)=>{
+      const g2=JSON.parse(payload.new.data);
+      if(!g2)return;
       const newLast=g2.calledNums?.length?g2.calledNums[g2.calledNums.length-1]:null;
       if(newLast&&newLast!==lastCalledNum){playPop();lastCalledNum=newLast;}
       pCalled=g2.calledNums||[];renderPlayer();applyStatus(g2);
     })
     .subscribe();
+  // 5s fallback in case realtime drops
+  pTimer=setInterval(async()=>{
+    const g2=await loadState();if(!g2)return;
+    const newLast=g2.calledNums?.length?g2.calledNums[g2.calledNums.length-1]:null;
+    if(newLast&&newLast!==lastCalledNum){playPop();lastCalledNum=newLast;}
+    pCalled=g2.calledNums||[];renderPlayer();applyStatus(g2);
+  },5000);
 }
 
 async function claimBingo(){
