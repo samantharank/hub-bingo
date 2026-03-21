@@ -92,7 +92,18 @@ footer strong{color:#f3b921;}
 <div class="bg-balls" id="bgBalls"></div>
 <header>
   <div class="logo-area">
-    <div class="hub-logo">HUB<span>.</span></div>
+    <svg height="36" viewBox="0 0 120 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#00aeef;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#1818b5;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <!-- Ring -->
+      <circle cx="18" cy="18" r="16" stroke="url(#ringGrad)" stroke-width="5" fill="none"/>
+      <!-- HUB text -->
+      <text x="40" y="26" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="22" fill="#ffffff" letter-spacing="1">HUB</text>
+    </svg>
     <div class="header-title">The HUB Social</div>
   </div>
   <div style="color:#f3b921;font-size:.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Bingo</div>
