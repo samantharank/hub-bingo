@@ -621,12 +621,13 @@ async function loadPlayerGame(){
       pCalled=g2.calledNums||[];renderPlayer();applyStatus(g2);
     })
     .subscribe();
-  // 5s fallback in case realtime drops
   pTimer=setInterval(async()=>{
     const g2=await loadState();if(!g2)return;
     const newLast=g2.calledNums?.length?g2.calledNums[g2.calledNums.length-1]:null;
     if(newLast&&newLast!==lastCalledNum){playPop();lastCalledNum=newLast;}
-    pCalled=g2.calledNums||[];renderPlayer();applyStatus(g2);
+    pCalled=g2.calledNums||[];
+    renderPlayer();
+    applyStatus(g2);
   },5000);
 }
 
@@ -653,9 +654,13 @@ function renderPlayer(){
   [...called].reverse().forEach(n=>{const c=col(n);const s=document.createElement('span');s.className=`chip ${c}`;s.textContent=`${c}${n}`;chips.appendChild(s);});
   const hdr=document.getElementById('pHdr');hdr.innerHTML='';
   COLS.forEach((l,i)=>{
-    const d=document.createElement('div');d.className='ch';
-    d.style.cssText=`width:62px;background:${CC[i]};color:#fff;`;
-    d.textContent=l;hdr.appendChild(d);
+    const d=document.createElement('div');
+    d.className='ch';
+    d.style.width='62px';
+    d.style.background=COL_HEADERS[i];
+    d.style.color='#ffffff';
+    d.textContent=l;
+    hdr.appendChild(d);
   });
   const won=win(pCard),wc=won?winCells(pCard):new Set();
   const grid=document.getElementById('pGrid');grid.innerHTML='';
