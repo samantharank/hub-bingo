@@ -281,8 +281,7 @@ const supabaseClient=supabase.createClient(SB_URL,SB_KEY);
 const COLS=['B','I','N','G','O'];
 const RANGES={B:[1,15],I:[16,30],N:[31,45],G:[46,60],O:[61,75]};
 const CC=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534'];
-const CONFETTI_COLORS=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534','#00aeef','#e3e3e3'];
-const PW='HUBbingo2026';
+const CONFETTI_COLORS=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534','#00aeef','#e3e3e3'];const PW='HUBbingo2026';
 const DOM='hubinternational.com';
 const SITE_URL='https://samantharank.github.io/hub-bingo';
 
@@ -448,10 +447,9 @@ function updateBall(ballId,labelId,n){
   const ball=document.getElementById(ballId);
   const label=document.getElementById(labelId);
   const c=col(n);const colIdx=COLS.indexOf(c);
-  const textColor=BALL_TEXT[colIdx];
   ball.className='ball pop';
   ball.style.background=CC[colIdx];
-  ball.innerHTML=`<span class="ball-letter" style="color:${textColor};opacity:.85;">${c}</span><span class="ball-number" style="color:${textColor};">${n}</span>`;
+  ball.innerHTML=`<span class="ball-letter" style="color:#fff;opacity:.85;">${c}</span><span class="ball-number" style="color:#fff;">${n}</span>`;
   if(label)label.textContent=`Column ${c}`;
 }
 
