@@ -16,7 +16,7 @@ header{background:#263746;border-bottom:4px solid #f3b921;padding:0 24px;display
 .hero{background:linear-gradient(135deg,#263746 0%,#18252d 100%);padding:48px 24px 40px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08);}
 .hero h1{font-size:2.8rem;font-weight:900;color:#fff;letter-spacing:2px;margin-bottom:8px;line-height:1.1;}
 .hero h1 em{color:#f3b921;font-style:normal;}
-.hero p{color:#e3e3e3;font-size:1rem;max-width:480px;margin:0 auto 24px;}
+.hero p{color:#e3e3e3;font-size:1rem;max-width:480px;margin:0 auto;}
 .bg-balls{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
 .bg-ball{position:absolute;border-radius:50%;opacity:0.05;animation:floatBall linear infinite;}
 @keyframes floatBall{0%{transform:translateY(110vh) rotate(0deg);}100%{transform:translateY(-20vh) rotate(360deg);}}
@@ -29,17 +29,16 @@ header{background:#263746;border-bottom:4px solid #f3b921;padding:0 24px;display
 .ball.empty{background:#385263;color:#757584;font-size:.8rem;text-align:center;padding:8px;line-height:1.4;}
 .ball.pop{animation:ballPop .5s ease-out;}
 @keyframes ballPop{0%{transform:scale(0.5);opacity:0;}60%{transform:scale(1.2);}100%{transform:scale(1);opacity:1;}}
-.ball-letter{font-size:1rem;color:#f3b921;letter-spacing:1px;}
-.ball-number{font-size:2.8rem;line-height:1;font-weight:bold;}
+.ball-letter{font-size:1rem;color:#fff;opacity:.85;letter-spacing:1px;}
+.ball-number{font-size:2.8rem;line-height:1;font-weight:bold;color:#fff;}
 .ball-col-label{font-size:.7rem;color:#757584;margin-top:4px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 .chips{display:flex;flex-wrap:wrap;gap:5px;max-height:80px;overflow-y:auto;}
-.chip{background:rgba(255,255,255,.08);border-radius:20px;padding:3px 9px;font-size:.75rem;color:#fff;font-weight:bold;animation:chipIn .3s ease-out;}
-@keyframes chipIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
-.chip.B{border-left:3px solid #263746;}.chip.I{border-left:3px solid #0678d5;}
+.chip{background:rgba(255,255,255,.08);border-radius:20px;padding:3px 9px;font-size:.75rem;color:#fff;font-weight:bold;}
+.chip.B{border-left:3px solid #0678d5;}.chip.I{border-left:3px solid #0678d5;}
 .chip.N{border-left:3px solid #f3b921;}.chip.G{border-left:3px solid #3ebd3e;}
 .chip.O{border-left:3px solid #ac1534;}
 .gtop{display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
-.ch{height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:bold;}
+.ch{height:36px;width:62px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:bold;color:#fff;}
 .cgrid{display:grid;grid-template-columns:repeat(5,62px);gap:4px;}
 .cell{width:62px;height:62px;background:rgba(255,255,255,.06);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:bold;cursor:pointer;border:2px solid transparent;user-select:none;transition:all .2s;color:#e3e3e3;}
 .cell:hover:not(.free):not(.marked){border-color:#f3b921;transform:scale(1.05);}
@@ -64,7 +63,7 @@ textarea{width:100%;flex:1;background:rgba(255,255,255,.06);color:#e3e3e3;border
 input[type=email],input[type=password]{width:100%;padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:.95rem;margin-bottom:10px;}
 input:focus{outline:none;border-color:#f3b921;}
 input::placeholder{color:#757584;}
-.err{color:#f3b921;font-size:.85rem;margin-bottom:8px;}
+.err{color:#f3b921;font-size:.85rem;margin-bottom:8px;min-height:20px;}
 .badge{background:#f3b921;color:#263746;padding:4px 14px;border-radius:20px;display:inline-block;font-size:.75rem;margin-bottom:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 .row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px;}
 .row input{margin-bottom:0;}
@@ -90,17 +89,14 @@ footer strong{color:#f3b921;}
 </style>
 </head>
 <body>
-
 <div class="bg-balls" id="bgBalls"></div>
-
 <header>
   <div class="logo-area">
     <div class="hub-logo">HUB<span>.</span></div>
     <div class="header-title">The HUB Social</div>
   </div>
-  <div style="color:#f3b921;font-size:.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;">🎰 Bingo</div>
+  <div style="color:#f3b921;font-size:.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Bingo</div>
 </header>
-
 <div class="hero">
   <p style="font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#f3b921;margin-bottom:10px;">The HUB Social</p>
   <h1>Let's Play<br><em>Bingo!</em></h1>
@@ -123,7 +119,7 @@ footer strong{color:#f3b921;}
     <div style="font-size:5rem;margin-bottom:8px;">🎉</div>
     <div style="font-size:2.5rem;font-weight:bold;color:#f3b921;margin-bottom:10px;letter-spacing:2px;">BINGO!</div>
     <div id="winMsg2" style="font-size:1.4rem;color:#fff;margin-bottom:20px;"></div>
-    <div id="hostDismissBtn" style="display:none;"><button onclick="dismissWin()" style="background:#f3b921;color:#263746;padding:10px 24px;border:none;border-radius:8px;font-weight:bold;font-size:1rem;cursor:pointer;">🎰 Start New Game</button></div>
+    <div id="hostDismissBtn" style="display:none;"><button onclick="dismissWin()" style="background:#f3b921;color:#263746;padding:10px 24px;border:none;border-radius:8px;font-weight:bold;font-size:1rem;cursor:pointer;">Start New Game</button></div>
     <div id="playerDismissBtn" style="display:none;"><button onclick="dismissWinPlayer()" style="background:rgba(255,255,255,.1);color:#fff;padding:10px 24px;border:none;border-radius:8px;font-weight:bold;font-size:1rem;cursor:pointer;">Close</button></div>
   </div>
 </div>
@@ -136,8 +132,8 @@ footer strong{color:#f3b921;}
     <div id="bingoWinner" style="font-size:1.2rem;color:#fff;margin-bottom:6px;"></div>
     <div style="color:#e3e3e3;font-size:.85rem;margin-bottom:20px;">Verify their card before confirming.</div>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-      <button onclick="confirmBingo()" style="background:#3ebd3e;color:#fff;padding:10px 20px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">✅ Confirm BINGO</button>
-      <button onclick="rejectBingo()" style="background:#ac1534;color:#fff;padding:10px 20px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">❌ False Alarm</button>
+      <button onclick="confirmBingo()" style="background:#3ebd3e;color:#fff;padding:10px 20px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">Confirm BINGO</button>
+      <button onclick="rejectBingo()" style="background:#ac1534;color:#fff;padding:10px 20px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">False Alarm</button>
     </div>
   </div>
 </div>
@@ -153,7 +149,7 @@ footer strong{color:#f3b921;}
 <!-- JSON MODAL -->
 <div id="jModal" class="modal">
   <div class="mbox">
-    <h2>📋 Power Automate JSON</h2>
+    <h2>Power Automate JSON</h2>
     <p>Copy and paste into your Power Automate flow.</p>
     <textarea id="jBox" readonly></textarea>
     <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end;">
@@ -168,7 +164,7 @@ footer strong{color:#f3b921;}
   <div class="panel">
     <div class="panel-title">Player Login</div>
     <p style="color:#e3e3e3;margin-bottom:16px;font-size:.95rem;">Enter your HUB email to load your bingo card</p>
-    <input type="email" id="pEmail" placeholder="firstname.lastname@hubinternational.com" onkeydown="if(event.key==='Enter')joinGame()"/>
+    <input type="email" id="pEmail" placeholder="firstname.lastname@hubinternational.com"/>
     <div id="pErr" class="err"></div>
     <button onclick="joinGame()" style="background:#f3b921;color:#263746;width:100%;padding:12px;border:none;border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;margin-bottom:10px;">Load My Card</button>
     <hr class="divider">
@@ -181,7 +177,7 @@ footer strong{color:#f3b921;}
   <p id="pGreet" style="color:#757584;font-size:.85rem;margin-bottom:10px;"></p>
   <div class="gtop" style="justify-content:center;">
     <div class="ball-wrap">
-      <div id="pBall" class="ball empty">Waiting...</div>
+      <div id="pBall" class="ball empty"><span style="font-size:.75rem;color:#757584;">Waiting<br>for host!</span></div>
       <div id="pBallLabel" class="ball-col-label"></div>
     </div>
     <div style="flex:1;min-width:160px;text-align:left;">
@@ -197,31 +193,31 @@ footer strong{color:#f3b921;}
   </div>
   <div id="pWinMsg" class="wm">🎉 BINGO! You win!</div>
   <div id="claimWrap" style="margin-top:12px;display:none;">
-    <button id="claimBtn" onclick="claimBingo()" style="background:#f3b921;color:#263746;padding:12px 28px;border:none;border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;">🎉 Claim BINGO!</button>
+    <button id="claimBtn" onclick="claimBingo()" style="background:#f3b921;color:#263746;padding:12px 28px;border:none;border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;">Claim BINGO!</button>
   </div>
   <div style="color:#757584;font-size:.75rem;margin-top:10px;">Tap a <span style="color:#f3b921;font-weight:bold;">highlighted</span> number to mark it off</div>
   <div class="bar">
-    <button onclick="switchPlayer()" style="background:rgba(255,255,255,.1);color:#fff;padding:6px 14px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">← Switch Player</button>
+    <button onclick="switchPlayer()" style="background:rgba(255,255,255,.1);color:#fff;padding:6px 14px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">Switch Player</button>
   </div>
 </div>
 
 <!-- H1: host login -->
 <div id="hLogin" class="page" style="max-width:340px;text-align:center;">
-  <div class="badge">🎙 Host Login</div><br>
-  <input type="password" id="hPw" placeholder="Enter host password" onkeydown="if(event.key==='Enter')tryLogin()"/>
+  <div class="badge">Host Login</div><br>
+  <input type="password" id="hPw" placeholder="Enter host password"/>
   <div id="hPwErr" class="err"></div>
   <button onclick="tryLogin()" style="background:#f3b921;color:#263746;width:100%;padding:12px;border:none;border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;margin-bottom:10px;">Login</button>
-  <button onclick="go('p1')" style="background:rgba(255,255,255,.1);color:#fff;padding:6px 14px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">← Back</button>
+  <button onclick="go('p1')" style="background:rgba(255,255,255,.1);color:#fff;padding:6px 14px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">Back</button>
 </div>
 
 <!-- H2: host setup -->
 <div id="hSetup" class="page" style="text-align:center;">
-  <div class="badge">🎙 HOST MODE</div>
+  <div class="badge">HOST MODE</div>
   <p style="color:#e3e3e3;margin-bottom:14px;">Choose how you want to add players</p>
   <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;">
-    <button id="tabOutlook" class="tab-btn tab-active" onclick="switchTab('outlook')">📧 Outlook Paste</button>
-    <button id="tabManual" class="tab-btn tab-inactive" onclick="switchTab('manual')">✏️ One by One</button>
-    <button id="tabExcel" class="tab-btn tab-inactive" onclick="switchTab('excel')">📊 Excel / Forms</button>
+    <button id="tabOutlook" class="tab-btn tab-active" onclick="switchTab('outlook')">Outlook Paste</button>
+    <button id="tabManual" class="tab-btn tab-inactive" onclick="switchTab('manual')">One by One</button>
+    <button id="tabExcel" class="tab-btn tab-inactive" onclick="switchTab('excel')">Excel / Forms</button>
   </div>
   <div id="inputOutlook">
     <p style="color:#757584;font-size:.85rem;margin-bottom:8px;">Paste your Outlook recipient list - emails extracted automatically</p>
@@ -241,8 +237,8 @@ footer strong{color:#f3b921;}
   </div>
   <div id="parsedCount" style="color:#f3b921;font-size:.85rem;margin:10px 0;min-height:20px;"></div>
   <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-    <button onclick="exportJSON()" style="background:#0678d5;color:#fff;" class="host-btn">📋 Export JSON</button>
-    <button onclick="startGame()" style="background:#f3b921;color:#263746;" class="host-btn">▶ Start Game</button>
+    <button onclick="exportJSON()" style="background:#0678d5;color:#fff;" class="host-btn">Export JSON</button>
+    <button onclick="startGame()" style="background:#f3b921;color:#263746;" class="host-btn">Start Game</button>
   </div>
   <div style="margin-top:14px;">
     <button onclick="go('p1')" style="background:rgba(255,255,255,.1);color:#fff;padding:6px 14px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">Log out</button>
@@ -251,13 +247,13 @@ footer strong{color:#f3b921;}
 
 <!-- H3: host game -->
 <div id="hGame" class="page">
-  <div style="text-align:center;margin-bottom:10px;"><div class="badge">🎙 HOST MODE</div></div>
+  <div style="text-align:center;margin-bottom:10px;"><div class="badge">HOST MODE</div></div>
   <div class="gtop">
     <div class="ball-wrap">
-      <div id="hBall" class="ball empty">Draw!</div>
+      <div id="hBall" class="ball empty"><span style="font-size:.75rem;color:#757584;">Draw!</span></div>
       <div id="hBallLabel" class="ball-col-label"></div>
     </div>
-    <button id="drawBtn" onclick="drawNumber()" style="background:#263746;color:#fff;font-size:1.1rem;padding:14px 28px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">🎲 Draw Number</button>
+    <button id="drawBtn" onclick="drawNumber()" style="background:#f3b921;color:#263746;font-size:1.1rem;padding:14px 28px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">Draw Number</button>
     <div style="flex:1;min-width:160px;">
       <div style="color:#757584;font-size:.8rem;margin-bottom:5px;">Called: <span id="hCount" style="color:#fff;font-weight:bold;">0</span>/75</div>
       <div class="chips" id="hChips"></div>
@@ -267,7 +263,7 @@ footer strong{color:#f3b921;}
   <div style="color:#757584;font-size:.75rem;text-align:center;margin-bottom:6px;">🟢 Online &nbsp;⚫ Not yet joined</div>
   <div id="hPlayers" class="hplist"></div>
   <div class="bar">
-    <button onclick="newGame()" style="background:#ac1534;color:#fff;padding:6px 14px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">🔄 New Game</button>
+    <button onclick="newGame()" style="background:#ac1534;color:#fff;padding:6px 14px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">New Game</button>
     <button onclick="go('p1')" style="background:rgba(255,255,255,.1);color:#fff;padding:6px 14px;font-size:.85rem;border:none;border-radius:8px;cursor:pointer;font-weight:bold;">Log out</button>
   </div>
 </div>
@@ -278,12 +274,14 @@ footer strong{color:#f3b921;}
 const SB_URL='https://zzpayiejynppqhtynlnk.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6cGF5aWVqeW5wcHFodHlubG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MTQwNzEsImV4cCI6MjA4NzQ5MDA3MX0.zV0eYc6raOOWP2ebuX0JJep-mzqWCn74rj0JWcjEaAI';
 const supabaseClient=supabase.createClient(SB_URL,SB_KEY);
+
 const COLS=['B','I','N','G','O'];
 const RANGES={B:[1,15],I:[16,30],N:[31,45],G:[46,60],O:[61,75]};
-const CC=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534'];
-const CONFETTI_COLORS=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534','#00aeef','#e3e3e3'];const PW='HUBbingo2026';
+const CC=['#0678d5','#0678d5','#f3b921','#3ebd3e','#ac1534'];
+const CONFETTI_COLORS=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534','#00aeef','#e3e3e3'];
+const PW='HUBbingo2026';
 const DOM='hubinternational.com';
-const SITE_URL='https://samantharank.github.io/hub-bingo';
+const SITE_URL='https://hub-bingo.netlify.app';
 
 let state=null,pEmail='',pCard=null,pCalled=[],pTimer=null,hostTimer=null;
 let isHost=false,lastStatus=null,lastCalledNum=null,activeTab='outlook';
@@ -293,7 +291,6 @@ const fn=e=>{const p=e.split('@')[0].split('.')[0];return p[0].toUpperCase()+p.s
 const full=e=>e.split('@')[0].split('.').map(p=>p[0].toUpperCase()+p.slice(1).toLowerCase()).join(' ');
 const col=n=>COLS[Math.floor((n-1)/15)];
 
-// floating background balls
 function initBgBalls(){
   const wrap=document.getElementById('bgBalls');
   const colors=['#263746','#0678d5','#f3b921','#3ebd3e','#ac1534','#00aeef'];
@@ -306,7 +303,6 @@ function initBgBalls(){
 }
 initBgBalls();
 
-// sound
 const AudioCtx=window.AudioContext||window.webkitAudioContext;
 let actx=null;
 function getACtx(){if(!actx)actx=new AudioCtx();return actx;}
@@ -314,7 +310,6 @@ function playPop(){try{const a=getACtx(),o=a.createOscillator(),g=a.createGain()
 function playMark(){try{const a=getACtx(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.type='sine';o.frequency.setValueAtTime(880,a.currentTime);g.gain.setValueAtTime(0.2,a.currentTime);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.15);o.start();o.stop(a.currentTime+0.15);}catch(e){}}
 function playFanfare(){try{const a=getACtx();[523,659,784,1047].forEach((freq,i)=>{const o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=freq;g.gain.setValueAtTime(0,a.currentTime+i*0.15);g.gain.linearRampToValueAtTime(0.3,a.currentTime+i*0.15+0.05);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+i*0.15+0.3);o.start(a.currentTime+i*0.15);o.stop(a.currentTime+i*0.15+0.3);});}catch(e){}}
 
-// countdown
 function showCountdown(cb){
   const modal=document.getElementById('countdownModal');
   const num=document.getElementById('countdownNum');
@@ -322,7 +317,7 @@ function showCountdown(cb){
   let count=3;num.textContent=count;
   const iv=setInterval(()=>{
     count--;
-    if(count<=0){clearInterval(iv);num.textContent='GO! 🎰';setTimeout(()=>{modal.classList.remove('on');cb();},700);}
+    if(count<=0){clearInterval(iv);num.textContent='GO!';setTimeout(()=>{modal.classList.remove('on');cb();},700);}
     else{num.textContent=count;num.style.animation='none';num.offsetHeight;num.style.animation='countPop .8s ease-out';}
   },900);
 }
@@ -332,7 +327,6 @@ function go(id){
   document.getElementById(id).classList.add('on');
 }
 
-// tab switching
 function switchTab(tab){
   activeTab=tab;
   document.getElementById('inputOutlook').style.display=tab==='outlook'?'block':'none';
@@ -404,9 +398,24 @@ async function saveState(g){
   try{const{error}=await supabaseClient.from('game').upsert({id:1,data:JSON.stringify(g)},{onConflict:'id'});if(error)console.error('Save error',error);}
   catch(e){console.error('Save error',e);}
 }
+
 async function loadState(){
-  try{const{data,error}=await supabaseClient.from('game').select('data').eq('id',1).single();if(error||!data)return null;return JSON.parse(data.data);}
-  catch(e){return null;}
+  try{
+    const{data,error}=await supabaseClient.from('game').select('data').eq('id',1).single();
+    if(error||!data)return null;
+    return JSON.parse(data.data);
+  }catch(e){console.error('Load error',e);return null;}
+}
+
+function updateBall(ballId,labelId,n){
+  const ball=document.getElementById(ballId);
+  const label=document.getElementById(labelId);
+  const c=col(n);
+  const colIdx=COLS.indexOf(c);
+  ball.className='ball pop';
+  ball.style.background=CC[colIdx];
+  ball.innerHTML=`<span class="ball-letter">${c}</span><span class="ball-number">${n}</span>`;
+  if(label)label.textContent=`Column ${c}`;
 }
 
 function applyStatus(g){
@@ -421,7 +430,7 @@ function applyStatus(g){
   if(status==='confirmed'){
     document.getElementById('pauseOverlay').classList.remove('on');
     document.getElementById('bingoAlert').classList.remove('on');
-    document.getElementById('winMsg2').textContent=`🎊 Congratulations ${g.bingoClaimant}! 🎊`;
+    document.getElementById('winMsg2').textContent=`Congratulations ${g.bingoClaimant}!`;
     document.getElementById('hostDismissBtn').style.display=isHost?'block':'none';
     document.getElementById('playerDismissBtn').style.display=isHost?'none':'block';
     document.getElementById('winOverlay').classList.add('on');
@@ -443,19 +452,11 @@ function launchConfetti(){
   }
 }
 
-function updateBall(ballId,labelId,n){
-  const ball=document.getElementById(ballId);
-  const label=document.getElementById(labelId);
-  const c=col(n);const colIdx=COLS.indexOf(c);
-  ball.className='ball pop';
-  ball.style.background=CC[colIdx];
-  ball.innerHTML=`<span class="ball-letter" style="color:#fff;opacity:.85;">${c}</span><span class="ball-number" style="color:#fff;">${n}</span>`;
-  if(label)label.textContent=`Column ${c}`;
-}
-
+// HOST
 async function tryLogin(){
   if(document.getElementById('hPw').value===PW){
-    document.getElementById('hPw').value='';document.getElementById('hPwErr').textContent='';
+    document.getElementById('hPw').value='';
+    document.getElementById('hPwErr').textContent='';
     isHost=true;
     const g=await loadState();
     if(g&&g.active){state=g;renderHost();go('hGame');startHostPoll();}
@@ -482,7 +483,7 @@ async function drawNumber(){
 function renderHost(){
   const called=state.calledNums,last=called.length?called[called.length-1]:null;
   if(last){updateBall('hBall','hBallLabel',last);}
-  else{const b=document.getElementById('hBall');b.className='ball empty';b.innerHTML='Draw!';document.getElementById('hBallLabel').textContent='';}
+  else{const b=document.getElementById('hBall');b.className='ball empty';b.style.background='';b.innerHTML='<span style="font-size:.75rem;color:#757584;">Draw!</span>';document.getElementById('hBallLabel').textContent='';}
   document.getElementById('hCount').textContent=called.length;
   const chips=document.getElementById('hChips');chips.innerHTML='';
   [...called].reverse().forEach(n=>{const c=col(n);const s=document.createElement('span');s.className=`chip ${c}`;s.textContent=`${c}${n}`;chips.appendChild(s);});
@@ -500,14 +501,10 @@ function renderHost(){
 
 function startHostPoll(){
   if(hostTimer)clearInterval(hostTimer);
-  // Realtime for instant host updates
   supabaseClient.channel('host-game')
     .on('postgres_changes',{event:'UPDATE',schema:'public',table:'game',filter:'id=eq.1'},async(payload)=>{
-      const g=JSON.parse(payload.new.data);
-      if(!g)return;state=g;renderHost();applyStatus(g);
-    })
-    .subscribe();
-  // 5s fallback
+      const g=JSON.parse(payload.new.data);if(!g)return;state=g;renderHost();applyStatus(g);
+    }).subscribe();
   hostTimer=setInterval(async()=>{const g=await loadState();if(!g)return;state=g;renderHost();applyStatus(g);},5000);
 }
 
@@ -587,14 +584,16 @@ function buildHTML(email){
 
 function copyJSON(btn){
   document.getElementById('jBox').select();document.execCommand('copy');
-  btn.textContent='✅ Copied!';setTimeout(()=>btn.textContent='Copy JSON',2000);
+  btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy JSON',2000);
 }
 
+// PLAYER
 function joinGame(){
   const e=document.getElementById('pEmail').value.trim().toLowerCase();
   if(!e){document.getElementById('pErr').textContent='Please enter your email.';return;}
   if(!e.endsWith('@'+DOM)){document.getElementById('pErr').textContent=`Please use your @${DOM} email.`;return;}
-  pEmail=e;pCard=null;lastStatus=null;document.getElementById('pErr').textContent='';
+  pEmail=e;pCard=null;lastStatus=null;lastCalledNum=null;
+  document.getElementById('pErr').textContent='';
   loadPlayerGame();
 }
 
@@ -603,65 +602,63 @@ async function loadPlayerGame(){
   if(!g||!g.active){document.getElementById('pErr').textContent='No active game yet. Ask your host to start the game first.';return;}
   const player=g.players.find(p=>p.email===pEmail);
   if(!player){document.getElementById('pErr').textContent=`No card found for ${pEmail}. Ask your host to add your email.`;return;}
-  if(!pCard)pCard=player.card.map(c=>({...c}));
+  pCard=player.card.map(c=>({...c}));
   pCalled=g.calledNums||[];
   lastCalledNum=pCalled.length?pCalled[pCalled.length-1]:null;
-  document.getElementById('pGreet').textContent=`👋 Hi ${fn(pEmail)}! Updates are instant!`;
+  document.getElementById('pGreet').textContent=`Hi ${fn(pEmail)}! Updates every 5 seconds.`;
   const online=new Set(g.onlinePlayers||[]);online.add(pEmail);g.onlinePlayers=[...online];
   await saveState(g);
   renderPlayer();go('p2');applyStatus(g);
   if(pTimer)clearInterval(pTimer);
-  // Realtime subscription for instant updates
-  supabaseClient.channel('player-game-'+pEmail)
-    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'game',filter:'id=eq.1'},async(payload)=>{
-      const g2=JSON.parse(payload.new.data);
-      if(!g2)return;
-      const newLast=g2.calledNums?.length?g2.calledNums[g2.calledNums.length-1]:null;
-      if(newLast&&newLast!==lastCalledNum){playPop();lastCalledNum=newLast;}
-      pCalled=g2.calledNums||[];renderPlayer();applyStatus(g2);
-    })
-    .subscribe();
   pTimer=setInterval(async()=>{
     const g2=await loadState();if(!g2)return;
     const newLast=g2.calledNums?.length?g2.calledNums[g2.calledNums.length-1]:null;
     if(newLast&&newLast!==lastCalledNum){playPop();lastCalledNum=newLast;}
     pCalled=g2.calledNums||[];
-    renderPlayer();
-    applyStatus(g2);
+    renderPlayer();applyStatus(g2);
   },5000);
 }
 
 async function claimBingo(){
   const btn=document.getElementById('claimBtn');
-  btn.disabled=true;btn.textContent='⏳ Waiting for host...';
+  btn.disabled=true;btn.textContent='Waiting for host...';
   const g=await loadState();
   if(g&&!g.bingoClaimant){
     g.status='paused';g.bingoClaimant=fn(pEmail);
     await saveState(g);
     document.getElementById('pauseMsg').textContent='You called BINGO! Host is verifying...';
     document.getElementById('pauseOverlay').classList.add('on');
-  }else{btn.textContent='⚠️ Already claimed!';btn.disabled=true;}
+  }else{btn.textContent='Already claimed!';btn.disabled=true;}
 }
 
 function dismissWinPlayer(){document.getElementById('winOverlay').classList.remove('on');}
 
 function renderPlayer(){
-  const called=pCalled,last=called.length?called[called.length-1]:null;
-  if(last){updateBall('pBall','pBallLabel',last);}
-  else{const b=document.getElementById('pBall');b.className='ball empty';b.style.background='';b.innerHTML='<span style="font-size:.75rem;color:#757584;">Waiting<br>for host!</span>';document.getElementById('pBallLabel').textContent='';}
+  const called=pCalled;
+  const last=called.length?called[called.length-1]:null;
+  if(last){
+    updateBall('pBall','pBallLabel',last);
+  }else{
+    const b=document.getElementById('pBall');
+    b.className='ball empty';
+    b.style.background='';
+    b.innerHTML='<span style="font-size:.75rem;color:#757584;">Waiting<br>for host!</span>';
+    document.getElementById('pBallLabel').textContent='';
+  }
   document.getElementById('pCount').textContent=called.length;
   const chips=document.getElementById('pChips');chips.innerHTML='';
   [...called].reverse().forEach(n=>{const c=col(n);const s=document.createElement('span');s.className=`chip ${c}`;s.textContent=`${c}${n}`;chips.appendChild(s);});
+  // column headers
   const hdr=document.getElementById('pHdr');hdr.innerHTML='';
   COLS.forEach((l,i)=>{
     const d=document.createElement('div');
     d.className='ch';
-    d.style.width='62px';
-    d.style.background=COL_HEADERS[i];
-    d.style.color='#ffffff';
+    d.style.background=CC[i];
+    d.style.color='#fff';
     d.textContent=l;
     hdr.appendChild(d);
   });
+  // grid
   const won=win(pCard),wc=won?winCells(pCard):new Set();
   const grid=document.getElementById('pGrid');grid.innerHTML='';
   for(let r=0;r<5;r++){
@@ -687,7 +684,8 @@ async function switchPlayer(){
   const g=await loadState();
   if(g){g.onlinePlayers=(g.onlinePlayers||[]).filter(e=>e!==pEmail);await saveState(g);}
   pEmail='';pCard=null;pCalled=[];lastStatus=null;lastCalledNum=null;
-  document.getElementById('pEmail').value='';document.getElementById('pErr').textContent='';
+  document.getElementById('pEmail').value='';
+  document.getElementById('pErr').textContent='';
   document.getElementById('pauseOverlay').classList.remove('on');
   document.getElementById('winOverlay').classList.remove('on');
   go('p1');
