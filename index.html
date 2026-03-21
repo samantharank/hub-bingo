@@ -448,8 +448,10 @@ function updateBall(ballId,labelId,n){
   const ball=document.getElementById(ballId);
   const label=document.getElementById(labelId);
   const c=col(n);const colIdx=COLS.indexOf(c);
-  ball.className='ball pop';ball.style.background=CC[colIdx];
-  ball.innerHTML=`<span class="ball-letter">${c}</span><span class="ball-number">${n}</span>`;
+  const textColor=BALL_TEXT[colIdx];
+  ball.className='ball pop';
+  ball.style.background=CC[colIdx];
+  ball.innerHTML=`<span class="ball-letter" style="color:${textColor};opacity:.85;">${c}</span><span class="ball-number" style="color:${textColor};">${n}</span>`;
   if(label)label.textContent=`Column ${c}`;
 }
 
@@ -646,13 +648,17 @@ function dismissWinPlayer(){document.getElementById('winOverlay').classList.remo
 
 function renderPlayer(){
   const called=pCalled,last=called.length?called[called.length-1]:null;
-  if(last){if(last!==lastCalledNum)updateBall('pBall','pBallLabel',last);}
-  else{const b=document.getElementById('pBall');b.className='ball empty';b.innerHTML='<span style="font-size:.75rem;color:#757584;">Draw a<br>number!</span>';document.getElementById('pBallLabel').textContent='';}
+  if(last){updateBall('pBall','pBallLabel',last);}
+  else{const b=document.getElementById('pBall');b.className='ball empty';b.style.background='';b.innerHTML='<span style="font-size:.75rem;color:#757584;">Waiting<br>for host!</span>';document.getElementById('pBallLabel').textContent='';}
   document.getElementById('pCount').textContent=called.length;
   const chips=document.getElementById('pChips');chips.innerHTML='';
   [...called].reverse().forEach(n=>{const c=col(n);const s=document.createElement('span');s.className=`chip ${c}`;s.textContent=`${c}${n}`;chips.appendChild(s);});
   const hdr=document.getElementById('pHdr');hdr.innerHTML='';
-  COLS.forEach((l,i)=>{const d=document.createElement('div');d.className='ch';d.style.cssText=`width:62px;background:${CC[i]};color:#fff;`;d.textContent=l;hdr.appendChild(d);});
+  COLS.forEach((l,i)=>{
+    const d=document.createElement('div');d.className='ch';
+    d.style.cssText=`width:62px;background:${CC[i]};color:#fff;`;
+    d.textContent=l;hdr.appendChild(d);
+  });
   const won=win(pCard),wc=won?winCells(pCard):new Set();
   const grid=document.getElementById('pGrid');grid.innerHTML='';
   for(let r=0;r<5;r++){
