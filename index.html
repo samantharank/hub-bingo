@@ -610,6 +610,16 @@ async function loadPlayerGame(){
   await saveState(g);
   renderPlayer();go('p2');applyStatus(g);
   if(pTimer)clearInterval(pTimer);
+  // Realtime for instant updates
+  supabaseClient.channel('player-'+pEmail)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'game',filter:'id=eq.1'},async(payload)=>{
+      const g2=JSON.parse(payload.new.data);if(!g2)return;
+      const newLast=g2.calledNums?.length?g2.calledNums[g2.calledNums.length-1]:null;
+      if(newLast&&newLast!==lastCalledNum){playPop();lastCalledNum=newLast;}
+      pCalled=g2.calledNums||[];
+      renderPlayer();applyStatus(g2);
+    }).subscribe();
+  // 5s fallback in case realtime drops
   pTimer=setInterval(async()=>{
     const g2=await loadState();if(!g2)return;
     const newLast=g2.calledNums?.length?g2.calledNums[g2.calledNums.length-1]:null;
